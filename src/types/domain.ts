@@ -15,6 +15,7 @@ export type Product = {
   discount_percent: number;
   description_html: string;
   image_url: string | null;
+  image_path: string | null;
   created_at: string;
   updated_at: string;
 };

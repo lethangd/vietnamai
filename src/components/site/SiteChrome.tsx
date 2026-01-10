@@ -2,102 +2,106 @@
 
 import { DrumPattern } from "@/components/vietnam/DrumPattern";
 import { FlagStarMark } from "@/components/vietnam/FlagStarMark";
+import { SiteFooter } from "@/components/site/SiteFooter";
+import { ScrollToProductButton } from "@/components/ui/ScrollToProductButton";
 import { cn } from "@/lib/cn";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { Button } from "@/components/ui/Button";
+import { LogOut } from "lucide-react";
 
+/**
+ * Site Chrome - Header + Footer + Background
+ * Vietnamese Modern AI Theme
+ */
 export function SiteChrome({ children }: { children: React.ReactNode }) {
   const { user, signOut } = useAuth();
 
   return (
-    <div className="min-h-screen bg-vietnam-gradient">
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-black/35 backdrop-blur supports-[backdrop-filter]:bg-black/20">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3 md:px-6">
+    <div className="min-h-screen bg-black">
+      {/* Header */}
+      <motion.header
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="sticky top-0 z-50 border-b border-zinc-800/50 bg-black/80 backdrop-blur-xl"
+      >
+        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-gold-500/30 to-transparent" />
+        
+        <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 md:px-6">
+          {/* Logo */}
           <Link href="/" className="group flex items-center gap-2">
-            <span className="relative inline-flex h-9 w-9 items-center justify-center rounded-xl bg-lacquer-700/30 shadow-lacquer-glow">
+            <span className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl bg-lacquer-700/30 shadow-lacquer-glow transition-all group-hover:bg-lacquer-700/40 group-hover:shadow-lacquer-glow">
               <FlagStarMark className="h-5 w-5 text-gold-300" />
             </span>
             <div className="leading-tight">
-              <div className="text-sm font-semibold tracking-wide text-zinc-50">
+              <div className="text-sm font-bold tracking-wide text-zinc-50">
                 VietnamAI
               </div>
-              <div className="text-[11px] text-zinc-300/90">AI Chatbot • Supabase</div>
+              <div className="text-[10px] text-zinc-400">AI Chatbot Solutions</div>
             </div>
           </Link>
 
-          <nav className="flex items-center gap-2">
-            <Link
-              href="/admin"
-              className={cn(
-                "rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-zinc-200",
-                "hover:bg-white/10 hover:text-white"
-              )}
-            >
-              Admin
-            </Link>
-
+          {/* Nav */}
+          <nav className="flex items-center gap-3">
+            {/* Staff login/logout */}
             {user ? (
-              <Link
-                href="/staff"
-                className={cn(
-                  "rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-zinc-200",
-                  "hover:bg-white/10 hover:text-white"
-                )}
-              >
-                Staff
-              </Link>
-            ) : null}
-
-            {user ? (
-              <Button
-                variant="outline"
-                onClick={() => void signOut()}
-                className="h-10"
-              >
-                Đăng xuất
-              </Button>
+              <>
+                <Link
+                  href="/staff"
+                  className={cn(
+                    "rounded-lg px-3 py-2 text-sm font-medium text-zinc-300 transition-colors",
+                    "hover:text-white hover:bg-zinc-800/50"
+                  )}
+                >
+                  Staff
+                </Link>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => void signOut()}
+                  className="text-zinc-400 hover:text-white"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Đăng xuất
+                </Button>
+              </>
             ) : (
-              <Link
-                href="/login"
-                className={cn(
-                  "rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-zinc-200",
-                  "hover:bg-white/10 hover:text-white"
-                )}
-              >
-                Đăng nhập
+              <Link href="/login">
+                <Button
+                  size="sm"
+                  className="border-zinc-700 bg-zinc-900/50 font-medium text-zinc-100 hover:border-zinc-600 hover:bg-zinc-800/50"
+                  variant="outline"
+                >
+                  Đăng nhập Staff
+                </Button>
               </Link>
             )}
           </nav>
         </div>
-      </header>
+      </motion.header>
 
-      <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.18]">
+      {/* Background pattern */}
+      <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.03]">
         <DrumPattern />
       </div>
 
+      {/* Main content */}
       <motion.div
         className="relative z-10"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease: "easeOut" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
       >
         {children}
       </motion.div>
 
-      <footer className="relative z-10 border-t border-white/10">
-        <div className="mx-auto w-full max-w-6xl px-4 py-10 text-xs text-zinc-400 md:px-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              © {new Date().getFullYear()} VietnamAI. Giao diện cảm hứng cờ đỏ sao
-              vàng & họa tiết trống đồng.
-            </div>
-            <div className="text-zinc-500">Build on Next.js + Supabase</div>
-          </div>
-        </div>
-      </footer>
+      {/* Scroll To Product Button - FIXED bottom-left */}
+      <ScrollToProductButton />
+
+      {/* Footer */}
+      <SiteFooter />
     </div>
   );
 }
-

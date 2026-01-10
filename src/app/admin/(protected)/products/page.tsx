@@ -95,7 +95,20 @@ export default function Page() {
     setSaving(true);
     setError(null);
     try {
-      const saved = await adminUpsertProduct({
+      // Nếu có file ảnh, upload trước
+      let finalImageUrl = imageUrl || null;
+      let finalImagePath: string | null = null;
+
+      if (imageFile) {
+        // Upload ảnh (dùng ID tạm nếu tạo mới)
+        const tempId = editId || crypto.randomUUID();
+        const uploaded = await uploadProductImage(imageFile, tempId);
+        finalImageUrl = uploaded.publicUrl;
+        finalImagePath = uploaded.path;
+      }
+
+      // Sau đó lưu sản phẩm với tất cả fields đầy đủ
+      await adminUpsertProduct({
         id: editId ?? undefined,
         name: name.trim(),
         slug: slug.trim(),
@@ -104,18 +117,9 @@ export default function Page() {
         price_vnd: price,
         discount_percent: discount,
         description_html: descriptionHtml,
-        image_url: imageUrl || null
+        image_url: finalImageUrl,
+        image_path: finalImagePath
       });
-
-      // Upload ảnh nếu có file, sau đó update URL
-      if (saved?.id && imageFile) {
-        const uploaded = await uploadProductImage(imageFile, saved.id);
-        await adminUpsertProduct({
-          id: saved.id,
-          image_url: uploaded.publicUrl,
-          image_path: uploaded.path
-        } as any);
-      }
 
       await load();
       startCreate();
