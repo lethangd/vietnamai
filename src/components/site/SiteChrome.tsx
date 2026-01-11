@@ -106,8 +106,10 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
         {children}
       </motion.div>
 
-      {/* Footer */}
-      <SiteFooter />
+      {/* Footer - z-index cao để không bị HomeBackground phủ lên */}
+      <div className="relative z-20" style={{ backgroundColor: '#000000' }}>
+        <SiteFooter />
+      </div>
     </div>
   );
 }

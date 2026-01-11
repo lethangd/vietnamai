@@ -31,23 +31,16 @@ export function SiteFooter() {
   };
 
   return (
-    <footer className="relative border-t border-zinc-800 bg-black">
+    <footer 
+      className="relative z-20 border-t border-zinc-800"
+      style={{ 
+        backgroundColor: '#000000',
+        isolation: 'isolate',
+      }}
+    >
       {/* Drum divider top */}
       <div className="absolute -top-8 left-0 right-0">
         <DrumDivider />
-      </div>
-
-      {/* Background với drum pattern cực nhẹ */}
-      <div className="absolute inset-0">
-        <div
-          className="absolute inset-0 opacity-[0.015]"
-          style={{
-            backgroundImage: "url('/images/drum-background.png')",
-            backgroundSize: "800px",
-            backgroundPosition: "center bottom",
-            mixBlendMode: "luminosity",
-          }}
-        />
       </div>
 
       <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-16">
@@ -74,23 +67,26 @@ export function SiteFooter() {
             {/* Contact info */}
             <div className="mt-6 space-y-2">
               <a
-                href="mailto:contact@vietnamai.vn"
+                href="mailto:vietnamaistore@gmail.com"
                 className="flex items-center gap-2 text-sm text-zinc-400 transition-colors hover:text-gold-400"
               >
                 <Mail className="h-4 w-4" />
-                contact@vietnamai.vn
+                vietnamaistore@gmail.com
               </a>
               <a
-                href="tel:+84123456789"
+                href="tel:0866798154"
                 className="flex items-center gap-2 text-sm text-zinc-400 transition-colors hover:text-gold-400"
               >
                 <Phone className="h-4 w-4" />
-                +84 123 456 789
+                0866798154
               </a>
-              <div className="flex items-start gap-2 text-sm text-zinc-400">
-                <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0" />
-                <span>Hà Nội, Việt Nam</span>
-              </div>
+              <a
+                href="tel:0886549877"
+                className="flex items-center gap-2 text-sm text-zinc-400 transition-colors hover:text-gold-400"
+              >
+                <Phone className="h-4 w-4" />
+                0886549877
+              </a>
             </div>
           </div>
 
