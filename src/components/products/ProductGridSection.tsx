@@ -10,13 +10,12 @@ import { applyDiscount, formatVnd } from "@/lib/money";
 import { fetchPublicCatalog } from "@/lib/supabase/publicQueries";
 import type { Category, Product } from "@/types/domain";
 import { motion } from "framer-motion";
-import { Check, Sparkles, Search, Filter, ArrowRight, Star } from "lucide-react";
+import { Check, Sparkles, Search, Filter, ArrowRight, Star, Zap, TrendingDown } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 /**
- * Product Grid Section - CARD LÀ TRUNG TÂM THỊ GIÁC
- * Card to, shadow sâu, featured nổi bật cực kỳ
+ * Product Grid Section - Nhấn mạnh AI type + Giá tốt nhất
  */
 export function ProductGridSection() {
   const [q, setQ] = useState("");
@@ -54,7 +53,24 @@ export function ProductGridSection() {
     });
   }, [q, category, products]);
 
-  // Featured product (discount > 0 hoặc tên chứa "Tuần")
+  const aiCategories = useMemo(() => {
+    // Không hardcode theo AI cụ thể: lấy từ categories trong DB để dễ mở rộng.
+    return categories
+      .map((c) => ({
+        ...c,
+        count: products.filter((p) => p.category_id === c.id).length,
+      }))
+      .filter((c) => c.count > 0);
+  }, [categories, products]);
+
+  function planBadge(name: string, categoryName?: string | null) {
+    const s = `${name} ${categoryName ?? ""}`.toLowerCase();
+    if (s.includes("premium")) return "PREMIUM";
+    if (/\bpro\b/.test(s) || s.includes(" pro")) return "PRO";
+    return null;
+  }
+
+  // Featured product
   const featuredProductId = useMemo(() => {
     const featured = products.find(p => p.discount_percent > 0 || p.name.includes("Tuần"));
     return featured?.id;
@@ -62,12 +78,12 @@ export function ProductGridSection() {
 
   return (
     <section id="san-pham" className="relative scroll-mt-20 py-16 md:py-20">
-      {/* Drum divider top */}
+      {/* Drum divider */}
       <div className="absolute top-0 left-0 right-0">
         <DrumDivider />
       </div>
 
-      {/* Background với drum pattern cực nhẹ */}
+      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-950/50 to-black">
         <div
           className="absolute inset-0 opacity-[0.02]"
@@ -82,7 +98,7 @@ export function ProductGridSection() {
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 md:px-6">
-        {/* Section Header */}
+        {/* Section Header - RÕ + giống design */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -91,18 +107,59 @@ export function ProductGridSection() {
           className="text-center"
         >
           <div className="inline-flex items-center gap-2 rounded-full border border-gold-500/20 bg-gold-500/10 px-4 py-1.5 text-xs font-medium text-gold-300">
-            <Sparkles className="h-3.5 w-3.5" />
-            Các gói ChatGPT Plus
+            <Zap className="h-3.5 w-3.5" />
+            Gói PRO / PREMIUM • Giá cực tốt
           </div>
           
           <h2 className="mt-6 text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">
-            Chọn gói phù hợp với nhu cầu của bạn
+            Gói AI dành cho người Việt
           </h2>
           
           <p className="mx-auto mt-4 max-w-2xl text-pretty text-base text-zinc-400 md:text-lg">
-            Linh hoạt, minh bạch, không ràng buộc. Nâng cấp hoặc hủy bất cứ lúc nào.
+            Chọn AI → chọn gói → so sánh giá → mua nhanh.
           </p>
         </motion.div>
+
+        {/* Danh sách AI (tự lấy từ categories, không hardcode) */}
+        {!loading && !error && aiCategories.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="mt-10"
+          >
+            <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-2">
+              <button
+                type="button"
+                onClick={() => setCategory("all")}
+                className={`rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
+                  category === "all"
+                    ? "border-gold-500/40 bg-gold-500/15 text-gold-200"
+                    : "border-white/10 bg-black/30 text-zinc-200 hover:bg-white/5"
+                }`}
+              >
+                Tất cả AI
+              </button>
+              {aiCategories.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setCategory(c.id)}
+                  className={`rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
+                    category === c.id
+                      ? "border-gold-500/40 bg-gold-500/15 text-gold-200"
+                      : "border-white/10 bg-black/30 text-zinc-200 hover:bg-white/5"
+                  }`}
+                  title={`${c.count} gói`}
+                >
+                  {c.name}
+                  <span className="ml-2 text-xs text-zinc-400">({c.count})</span>
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
         {/* Filter & Search */}
         <motion.div
@@ -117,7 +174,7 @@ export function ProductGridSection() {
             <Input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Tìm theo tên gói..."
+              placeholder="Tìm ChatGPT, Claude..."
               className="h-11 w-64 border-zinc-800 bg-zinc-900/50 pl-10 text-sm backdrop-blur-sm focus:border-gold-500/50"
             />
           </div>
@@ -125,11 +182,12 @@ export function ProductGridSection() {
           <div className="relative">
             <Filter className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
             <select
+              aria-label="Lọc theo AI"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               className="h-11 appearance-none rounded-xl border border-zinc-800 bg-zinc-900/50 pl-10 pr-10 text-sm text-zinc-100 backdrop-blur-sm focus:border-gold-500/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300/30"
             >
-              <option value="all">Tất cả thể loại</option>
+              <option value="all">Tất cả AI</option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -142,7 +200,7 @@ export function ProductGridSection() {
         {/* Loading / Error */}
         {loading && (
           <div className="mt-12 flex items-center justify-center gap-2 text-sm text-zinc-400">
-            <Spinner /> Đang tải sản phẩm…
+            <Spinner /> Đang tải...
           </div>
         )}
 
@@ -152,7 +210,7 @@ export function ProductGridSection() {
           </div>
         )}
 
-        {/* Product Cards Grid - TRUNG TÂM THỊ GIÁC */}
+        {/* Product Cards Grid - SO SÁNH DỄ */}
         {!loading && !error && (
           <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {filtered.map((p, idx) => {
@@ -160,6 +218,7 @@ export function ProductGridSection() {
               const hasDiscount = p.discount_percent > 0;
               const isFeatured = p.id === featuredProductId;
               const cat = categories.find((c) => c.id === p.category_id)?.name;
+              const plan = planBadge(p.name, cat);
 
               return (
                 <motion.div
@@ -174,7 +233,7 @@ export function ProductGridSection() {
                     href={`/products/${p.slug}`}
                     className="group relative block h-full"
                   >
-                    {/* FEATURED BADGE - CỰC NỔI */}
+                    {/* FEATURED BADGE */}
                     {isFeatured && (
                       <motion.div
                         className="absolute -top-4 left-1/2 z-20 -translate-x-1/2"
@@ -188,14 +247,14 @@ export function ProductGridSection() {
                           ease: "easeInOut",
                         }}
                       >
-                        <div className="flex items-center gap-2 rounded-full bg-gradient-to-r from-gold-500 to-gold-600 px-5 py-2 text-sm font-bold text-black shadow-2xl shadow-gold-500/60">
+                        <div className="flex items-center gap-2 rounded-full bg-gradient-to-r from-lacquer-600 to-lacquer-700 px-5 py-2 text-sm font-bold text-white shadow-2xl shadow-lacquer-500/60">
                           <Star className="h-4 w-4 fill-current" />
-                          Phổ biến nhất
+                          Bán chạy nhất
                         </div>
                       </motion.div>
                     )}
 
-                    {/* CARD - TO, SHADOW SÂU, NỔI BẬT */}
+                    {/* CARD */}
                     <motion.div
                       className={`
                         relative h-full overflow-hidden rounded-3xl border-2 bg-gradient-to-br transition-all duration-500
@@ -207,7 +266,7 @@ export function ProductGridSection() {
                       `}
                       whileHover={{ scale: isFeatured ? 1.02 : 1.01 }}
                     >
-                      {/* Drum pattern background trong card - cực nhẹ */}
+                      {/* Drum pattern background */}
                       <div
                         className="absolute inset-0 opacity-[0.02]"
                         style={{
@@ -217,23 +276,16 @@ export function ProductGridSection() {
                           mixBlendMode: "overlay",
                         }}
                       />
-                      {/* Glow overlay khi featured */}
+
+                      {/* Featured effects */}
                       {isFeatured && (
                         <>
                           <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-gold-500/20 via-transparent to-gold-600/10 opacity-0 transition-opacity group-hover:opacity-100" />
-                          {/* Animated border glow */}
                           <motion.div
                             className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-gold-500 via-gold-400 to-gold-600 opacity-0 blur-xl transition-opacity group-hover:opacity-50"
-                            animate={{
-                              opacity: [0.3, 0.6, 0.3],
-                            }}
-                            transition={{
-                              duration: 3,
-                              repeat: Infinity,
-                              ease: "easeInOut",
-                            }}
+                            animate={{ opacity: [0.3, 0.6, 0.3] }}
+                            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                           />
-                          {/* Họa tiết trống đồng 4 góc */}
                           <DrumCorner position="top-left" />
                           <DrumCorner position="top-right" />
                           <DrumCorner position="bottom-left" />
@@ -242,74 +294,108 @@ export function ProductGridSection() {
                       )}
 
                       <div className={`relative ${isFeatured ? "p-8" : "p-6"}`}>
-                        {/* Category badge */}
-                        {cat && (
-                          <div className="mb-4">
-                            <Badge className={`border-zinc-700 bg-zinc-800/50 text-xs ${isFeatured ? "text-gold-300 border-gold-600/30 bg-gold-600/10" : "text-zinc-300"}`}>
+                        {/* AI Type Badge - NỔI BẬT */}
+                        <div className="mb-4 flex flex-wrap items-center gap-2">
+                          {cat && (
+                            <Badge
+                              className={`text-sm font-bold ${
+                                isFeatured
+                                  ? "border-gold-600/40 bg-gradient-to-r from-gold-500/20 to-gold-600/20 text-gold-300"
+                                  : "border-zinc-700 bg-zinc-800/50 text-zinc-300"
+                              }`}
+                            >
                               {cat}
                             </Badge>
-                          </div>
-                        )}
+                          )}
+                          {plan && (
+                            <Badge className="border-white/10 bg-white/5 text-xs font-black text-white">
+                              {plan}
+                            </Badge>
+                          )}
+                          {hasDiscount && (
+                            <Badge className="border-gold-500/20 bg-gold-500/10 text-xs font-bold text-gold-300">
+                              GIÁ TỐT
+                            </Badge>
+                          )}
+                        </div>
 
-                        {/* Product name - TO HƠN */}
+                        {/* Product name - NHẤN MẠNH AI */}
                         <h3 className={`font-bold text-white transition-colors ${isFeatured ? "text-2xl md:text-3xl group-hover:text-gold-300" : "text-xl group-hover:text-gold-400"}`}>
                           {p.name}
                         </h3>
 
-                        {/* Quantity info */}
+                        {/* Duration */}
                         {p.quantity > 0 && (
                           <p className="mt-2 text-xs text-zinc-500">
-                            Thời gian sử dụng: <span className="text-zinc-400 font-medium">{p.quantity} ngày</span>
+                            Thời hạn: <span className="font-semibold text-zinc-400">{p.quantity} ngày</span>
                           </p>
                         )}
 
-                        {/* Price - CỰC NỔI */}
-                        <div className={`${isFeatured ? "mt-8" : "mt-6"}`}>
+                        {/* PRICE - CỰC NỔI BẬT */}
+                        <div className={`border-b border-zinc-800 pb-6 ${isFeatured ? "mt-8" : "mt-6"}`}>
                           {hasDiscount && (
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm text-zinc-500 line-through">
+                            <div className="mb-2 flex items-center gap-2">
+                              <span className="text-base text-zinc-500 line-through">
                                 {formatVnd(p.price_vnd)}
                               </span>
-                              <Badge className="border-lacquer-500/30 bg-lacquer-500/10 text-xs text-lacquer-300 font-bold">
-                                -{p.discount_percent}%
+                              <Badge className="border-lacquer-500/30 bg-lacquer-500/10 text-xs font-bold text-lacquer-300">
+                                Giảm {p.discount_percent}%
                               </Badge>
                             </div>
                           )}
-                          <div className="mt-1 flex items-baseline gap-1">
-                            <span className={`font-bold ${isFeatured ? "text-4xl md:text-5xl text-gold-400" : "text-3xl text-white"}`}>
+                          <div className="flex items-baseline gap-2">
+                            <span className={`font-black ${isFeatured ? "text-5xl md:text-6xl text-gold-400" : "text-4xl text-white"}`}>
                               {formatVnd(finalPrice)}
                             </span>
-                            <span className="text-sm text-zinc-500">/gói</span>
                           </div>
+                          <p className="mt-2 text-sm text-zinc-500">
+                            {hasDiscount && "👉 "}Rẻ hơn mua trực tiếp
+                          </p>
                         </div>
 
-                        {/* Features list - RÕHƠN */}
-                        <ul className={`space-y-3 ${isFeatured ? "mt-8" : "mt-6"}`}>
+                        {/* Features - NHẤN MẠN H GIÁ TRỊ */}
+                        <ul className={`space-y-3 ${isFeatured ? "mt-6" : "mt-5"}`}>
                           <li className="flex items-start gap-2 text-sm text-zinc-300">
                             <div className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full ${isFeatured ? "bg-gold-500/30" : "bg-gold-500/20"}`}>
                               <Check className={`h-3.5 w-3.5 ${isFeatured ? "text-gold-300" : "text-gold-400"}`} />
                             </div>
-                            <span className={isFeatured ? "font-medium" : ""}>Tự do lựa chọn tài khoản ChatGPT</span>
+                            <span className={isFeatured ? "font-medium" : ""}>Tài khoản chính chủ</span>
                           </li>
                           <li className="flex items-start gap-2 text-sm text-zinc-300">
                             <div className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full ${isFeatured ? "bg-gold-500/30" : "bg-gold-500/20"}`}>
                               <Check className={`h-3.5 w-3.5 ${isFeatured ? "text-gold-300" : "text-gold-400"}`} />
                             </div>
-                            <span className={isFeatured ? "font-medium" : ""}>Không giới hạn tạo ảnh trong ngày</span>
+                            <span className={isFeatured ? "font-medium" : ""}>Không giới hạn tạo ảnh</span>
                           </li>
                           <li className="flex items-start gap-2 text-sm text-zinc-300">
                             <div className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full ${isFeatured ? "bg-gold-500/30" : "bg-gold-500/20"}`}>
                               <Check className={`h-3.5 w-3.5 ${isFeatured ? "text-gold-300" : "text-gold-400"}`} />
                             </div>
-                            <span className={isFeatured ? "font-medium" : ""}>Không giới hạn hỏi thoại trong ngày</span>
+                            <span className={isFeatured ? "font-medium" : ""}>Hỗ trợ 24/7 qua Zalo</span>
+                          </li>
+                          <li className="flex items-start gap-2 text-sm text-zinc-300">
+                            <div className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full ${isFeatured ? "bg-gold-500/30" : "bg-gold-500/20"}`}>
+                              <Check className={`h-3.5 w-3.5 ${isFeatured ? "text-gold-300" : "text-gold-400"}`} />
+                            </div>
+                            <span className={isFeatured ? "font-medium" : ""}>Thanh toán an toàn</span>
                           </li>
                         </ul>
 
-                        {/* CTA Button - TO, RÕ, TƯƠNG PHẢN */}
+                        {/* VALUE PROP - SO SÁNH */}
+                        {isFeatured && (
+                          <div className="mt-6 rounded-xl border border-gold-600/30 bg-gold-500/5 px-4 py-3">
+                            <div className="flex items-center gap-2 text-xs font-semibold text-gold-300">
+                              <TrendingDown className="h-4 w-4" />
+                              Rẻ hơn mua chính hãng {hasDiscount ? p.discount_percent : 50}%
+                            </div>
+                          </div>
+                        )}
+
+                        {/* CTA Button */}
                         <Button
-                          size={isFeatured ? "lg" : "default"}
+                          size={isFeatured ? "lg" : "md"}
                           className={`
-                            mt-8 w-full transition-all group/btn
+                            mt-6 w-full transition-all group/btn
                             ${
                               isFeatured
                                 ? "h-14 bg-gradient-to-r from-gold-500 to-gold-600 font-bold text-black shadow-xl shadow-gold-500/40 hover:shadow-2xl hover:shadow-gold-500/60 hover:scale-[1.02]"
@@ -317,7 +403,7 @@ export function ProductGridSection() {
                             }
                           `}
                         >
-                          {isFeatured ? "Chọn gói ngay" : "Xem chi tiết"}
+                          {isFeatured ? "Mua ngay" : "Xem chi tiết"}
                           <ArrowRight className={`transition-transform group-hover/btn:translate-x-1 ${isFeatured ? "h-5 w-5" : "h-4 w-4"}`} />
                         </Button>
                       </div>
@@ -333,7 +419,7 @@ export function ProductGridSection() {
         {!loading && !error && filtered.length === 0 && (
           <div className="mt-12 text-center">
             <p className="text-sm text-zinc-400">
-              Không tìm thấy sản phẩm phù hợp. Thử thay đổi bộ lọc.
+              Không tìm thấy AI phù hợp. Thử thay đổi bộ lọc.
             </p>
           </div>
         )}

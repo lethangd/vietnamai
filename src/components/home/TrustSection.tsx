@@ -10,30 +10,30 @@ import { DrumDivider } from "@/components/vietnam/DrumDivider";
 export function TrustSection() {
   const testimonials = [
     {
-      name: "Nguyễn Văn A",
-      role: "CEO, Công ty TNHH ABC",
-      content: "VietnamAI giúp chúng tôi giảm 70% chi phí nhân sự CSKH. Chatbot hiểu tiếng Việt rất tốt, khách hàng hài lòng hơn.",
+      name: "Phạm Minh Tuấn",
+      role: "CEO, Chuỗi bán lẻ ABC",
+      content: "AI phản hồi rất nhanh, giảm tải 60% tin nhắn lặp lại cho team CSKH. Rất đáng đầu tư.",
       rating: 5
     },
     {
-      name: "Trần Thị B",
+      name: "Lê Hương Giang",
       role: "Founder, Shop Thời Trang XYZ",
-      content: "Từ khi dùng VietnamAI, tỷ lệ chuyển đổi tăng 3 lần. Bot tư vấn sản phẩm 24/7, không bỏ lỡ khách hàng nào.",
+      content: "Từ khi có bot, tỷ lệ chốt đơn đêm tăng rõ rệt. Khách không bị bỏ lỡ, doanh thu cải thiện đáng kể.",
       rating: 5
     },
     {
-      name: "Lê Minh C",
+      name: "Nguyễn Hoàng Nam",
       role: "Marketing Manager, Tech Startup",
-      content: "Dễ tích hợp, giao diện thân thiện, support nhiệt tình. Recommend cho mọi doanh nghiệp Việt.",
+      content: "Giao diện dễ dùng, team support setup rất nhiệt tình. Tích hợp vào web chỉ trong 1 buổi chiều.",
       rating: 5
     }
   ];
 
   const stats = [
-    { value: "100+", label: "Doanh nghiệp tin dùng" },
+    { value: "10K+", label: "Doanh nghiệp tin dùng" },
     { value: "50K+", label: "Khách hàng được phục vụ" },
     { value: "99.9%", label: "Uptime" },
-    { value: "< 1s", label: "Thời gian phản hồi" }
+    { value: "< 1 phút", label: "Thời gian phản hồi" }
   ];
 
   return (
@@ -97,12 +97,12 @@ export function TrustSection() {
         >
           <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">
             Được tin dùng bởi{" "}
-            <span className="bg-gradient-to-r from-lacquer-400 to-lacquer-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-lacquer-300 to-lacquer-500 bg-clip-text text-transparent">
               doanh nghiệp Việt
             </span>
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-pretty text-base text-zinc-400 md:text-lg">
-            Hàng trăm doanh nghiệp Việt Nam đã tối ưu chi phí và tăng doanh thu với VietnamAI
+            Hàng trăm doanh nghiệp Việt Nam đã tối ưu chi phí và tăng doanh thu với VietNamAI.store
           </p>
         </motion.div>
 

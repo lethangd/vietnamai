@@ -11,7 +11,7 @@ import { DrumPattern } from "@/components/vietnam/DrumPattern";
  */
 export function CTASection() {
   return (
-    <section className="relative py-20 md:py-24">
+    <section id="lien-he" className="relative py-20 md:py-24">
       {/* Background với drum pattern */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-lacquer-900/40 via-black to-gold-900/30">

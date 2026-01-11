@@ -5,7 +5,7 @@ import { ShoppingBag, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 
 /**
- * Scroll To Product Button - FIXED bottom-left
+ * Scroll To Product Button - FIXED bottom-right
  * UX Critical: Người dùng LUÔN thấy nút này
  * Pulse animation liên tục để không thể bỏ qua
  */
@@ -36,8 +36,8 @@ export function ScrollToProductButton() {
   return (
     <motion.button
       onClick={scrollToProducts}
-      className="group fixed bottom-8 left-8 z-50 flex items-center gap-3 rounded-full bg-gradient-to-r from-gold-500 to-gold-600 px-6 py-4 text-base font-bold text-black shadow-2xl shadow-gold-500/60 transition-all hover:scale-105 hover:shadow-gold-500/80 md:px-8 md:py-5"
-      initial={{ x: -100, opacity: 0 }}
+      className="group fixed bottom-8 right-8 z-50 flex items-center gap-3 rounded-full bg-gradient-to-r from-gold-500 to-gold-600 px-6 py-4 text-base font-bold text-black shadow-2xl shadow-gold-500/60 transition-all hover:scale-105 hover:shadow-gold-500/80 md:px-8 md:py-5"
+      initial={{ x: 100, opacity: 0 }}
       animate={{
         x: 0,
         opacity: 1,

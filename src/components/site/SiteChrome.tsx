@@ -1,7 +1,6 @@
 "use client";
 
 import { DrumPattern } from "@/components/vietnam/DrumPattern";
-import { FlagStarMark } from "@/components/vietnam/FlagStarMark";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { ScrollToProductButton } from "@/components/ui/ScrollToProductButton";
 import { cn } from "@/lib/cn";
@@ -10,6 +9,7 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { Button } from "@/components/ui/Button";
 import { LogOut } from "lucide-react";
+import Image from "next/image";
 
 /**
  * Site Chrome - Header + Footer + Background
@@ -33,13 +33,22 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
           {/* Logo */}
           <Link href="/" className="group flex items-center gap-2">
             <span className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl bg-lacquer-700/30 shadow-lacquer-glow transition-all group-hover:bg-lacquer-700/40 group-hover:shadow-lacquer-glow">
-              <FlagStarMark className="h-5 w-5 text-gold-300" />
+              <Image
+                src="/images/logo.png"
+                alt="VietNamAI.store"
+                width={28}
+                height={28}
+                className="h-7 w-7 object-contain"
+                priority
+              />
             </span>
             <div className="leading-tight">
               <div className="text-sm font-bold tracking-wide text-zinc-50">
-                VietnamAI
+                VietNamAI.store
               </div>
-              <div className="text-[10px] text-zinc-400">AI Chatbot Solutions</div>
+              <div className="text-[10px] text-zinc-400">
+                Sản phẩm AI với chất lượng tốt nhất
+              </div>
             </div>
           </Link>
 
@@ -96,9 +105,6 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
       >
         {children}
       </motion.div>
-
-      {/* Scroll To Product Button - FIXED bottom-left */}
-      <ScrollToProductButton />
 
       {/* Footer */}
       <SiteFooter />
