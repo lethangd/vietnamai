@@ -49,18 +49,18 @@ export function CTASection() {
 
           {/* Heading */}
           <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">
-            Sẵn sàng tăng{" "}
+            Sẵn sàng trải nghiệm{" "}
             <span className="bg-gradient-to-r from-gold-400 to-gold-600 bg-clip-text text-transparent">
-              doanh thu
+              AI tốt nhất
             </span>
             <br />
-            với AI Chatbot?
+            với VietNamAI.store?
           </h2>
 
           {/* Subtitle */}
           <p className="mx-auto mt-6 max-w-2xl text-pretty text-base text-zinc-400 md:text-lg">
-            Không cần cài đặt phức tạp. Không cần kiến thức lập trình. 
-            Chỉ cần 5 phút để bắt đầu tự động hóa chăm sóc khách hàng.
+            Tư vấn trực tiếp qua Zalo/Telegram hoặc Facebook.
+            Thanh toán an toàn qua MoMo, ZaloPay, ViettelPay, ... sau khi hoàn thành đơn hàng.
           </p>
 
           {/* CTA Buttons */}

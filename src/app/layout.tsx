@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "VietnamAI — AI Chatbot cho doanh nghiệp Việt Nam",
   description: "Giải pháp AI Chatbot hàng đầu cho doanh nghiệp Việt Nam. Tự động hóa chăm sóc khách hàng 24/7, tăng doanh thu, giảm chi phí. Công nghệ AI hiểu tiếng Việt.",
   icons: {
-    icon: '/favicon.svg',
+    icon: '/images/logo.png',
   },
 };
 

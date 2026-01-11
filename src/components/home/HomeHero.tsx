@@ -121,7 +121,7 @@ export function HomeHero() {
               </div>
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-4 py-2 text-sm font-semibold text-zinc-200 backdrop-blur-md">
                 <BadgeCheck className="h-4 w-4 text-gold-400" />
-                AI uy tín lâu dài
+                Sản phẩm được bảo hành đầy đủ
               </div>
             </div>
           </div>

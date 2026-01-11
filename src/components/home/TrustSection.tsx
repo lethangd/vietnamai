@@ -11,20 +11,20 @@ export function TrustSection() {
   const testimonials = [
     {
       name: "Phạm Minh Tuấn",
-      role: "CEO, Chuỗi bán lẻ ABC",
-      content: "AI phản hồi rất nhanh, giảm tải 60% tin nhắn lặp lại cho team CSKH. Rất đáng đầu tư.",
+      role: "Sinh viên NEU",
+      content: "Sản phẩm AI của shop rất tốt, giảm tải 60% tin nhắn lặp lại cho team CSKH. Rất đáng đầu tư.",
       rating: 5
     },
     {
       name: "Lê Hương Giang",
-      role: "Founder, Shop Thời Trang XYZ",
-      content: "Từ khi có bot, tỷ lệ chốt đơn đêm tăng rõ rệt. Khách không bị bỏ lỡ, doanh thu cải thiện đáng kể.",
+      role: "Creator tiktok",
+      content: "Khi sản phẩm có lỗi, đội ngũ suppport rất nhanh chóng. Trải nghiệm rất tốt.",
       rating: 5
     },
     {
       name: "Nguyễn Hoàng Nam",
       role: "Marketing Manager, Tech Startup",
-      content: "Giao diện dễ dùng, team support setup rất nhiệt tình. Tích hợp vào web chỉ trong 1 buổi chiều.",
+      content: "Team support rất nhiệt tình. Từ khâu hỗ trợ cài đặt tài khoản. Cảm ơn shop. Sẽ quay lại mua.",
       rating: 5
     }
   ];
@@ -102,7 +102,7 @@ export function TrustSection() {
             </span>
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-pretty text-base text-zinc-400 md:text-lg">
-            Hàng trăm doanh nghiệp Việt Nam đã tối ưu chi phí và tăng doanh thu với VietNamAI.store
+            Hàng trăm khách hàng và doanh nghiệp Việt Nam đã tối ưu chi phí và tăng doanh thu với VietNamAI.store
           </p>
         </motion.div>
 
