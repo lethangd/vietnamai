@@ -1,40 +1,36 @@
 "use client";
 
-import Image from "next/image";
-
 /**
- * HomeBackground - phủ trống đồng toàn bộ Home (mờ + blur + overlay đỏ→đen)
- * Mục tiêu: thấy trống đồng nhưng không rối, không bị "viền ảnh".
+ * HomeBackground - phủ trống đồng toàn bộ Home
+ * Dùng CSS background-image trực tiếp (theo Context7) để opacity hoạt động đúng
  */
 export function HomeBackground() {
   return (
-    <div className="pointer-events-none fixed inset-0 -z-0 overflow-hidden">
-      {/* Base gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-lacquer-950/75 via-black to-black" />
+    <>
+      {/* Drum background - LAYER ĐẦU TIÊN, opacity cao để THẤY RÕ */}
+      <div 
+        className="pointer-events-none fixed inset-0 -z-0 overflow-hidden"
+        style={{
+          backgroundImage: "url('/images/drum-background.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundAttachment: "fixed",
+          opacity: 0.52,
+          filter: "blur(0.8px)",
+          mixBlendMode: "luminosity",
+        }}
+      />
 
-      {/* Golden light on right */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_28%,rgba(255,215,0,0.18)_0%,transparent_52%)]" />
+      {/* Base gradient NHẸ (đỏ → đen) - overlay sau */}
+      <div className="pointer-events-none fixed inset-0 -z-0 bg-gradient-to-b from-lacquer-950/25 via-black/40 to-black/70" />
 
-      {/* Drum image (center + scale) */}
-      <div className="absolute inset-0">
-        <Image
-          src="/images/drum-background.png"
-          alt=""
-          fill
-          priority
-          className="object-cover object-center opacity-[0.22] blur-[1.5px]"
-          style={{
-            mixBlendMode: "luminosity",
-            // fade edges để tránh cảm giác “viền ảnh”
-            maskImage:
-              "radial-gradient(circle at 55% 45%, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 78%)",
-          }}
-        />
-      </div>
-
-      {/* Extra soft vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.85)_72%)]" />
-    </div>
+      {/* Vignette CỰC NHẸ chỉ ở mép */}
+      <div className="pointer-events-none fixed inset-0 -z-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,transparent_65%,rgba(0,0,0,0.3)_92%)]" />
+      
+      {/* Golden light nhẹ bên phải */}
+      <div className="pointer-events-none fixed inset-0 -z-0 bg-[radial-gradient(circle_at_72%_32%,rgba(255,215,0,0.06)_0%,transparent_42%)]" />
+    </>
   );
 }
 
