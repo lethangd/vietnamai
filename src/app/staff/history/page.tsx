@@ -21,8 +21,10 @@ import { Clock, ChevronLeft, ChevronRight } from "lucide-react";
 
 type TimeEntryRow = {
   id: string;
+  staff_user_id: string;
   check_in_at: string;
   check_out_at: string | null;
+  created_at: string;
 };
 
 /**
@@ -43,7 +45,7 @@ export default function Page() {
       setErr(null);
       const { data, error } = await supabase
         .from("time_entries")
-        .select("id, check_in_at, check_out_at")
+        .select("id, staff_user_id, check_in_at, check_out_at, created_at")
         .eq("staff_user_id", user.id)
         .order("check_in_at", { ascending: false })
         .limit(200);

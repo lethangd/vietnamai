@@ -89,7 +89,11 @@ export function ProductDetailLoader({ slug }: { slug: string }) {
   }
 
   return (
-    <ProductDetailClient product={product} category={category} settings={settings} />
+    <ProductDetailClient 
+      product={product} 
+      categoryName={category?.name} 
+      settings={settings} 
+    />
   );
 }
 

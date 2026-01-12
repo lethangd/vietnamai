@@ -14,6 +14,7 @@ type TimeEntryRow = {
   staff_user_id: string;
   check_in_at: string;
   check_out_at: string | null;
+  created_at: string;
 };
 
 /**
@@ -35,7 +36,7 @@ export default function Page() {
     // Load active entry
     const { data: activeData } = await supabase
       .from("time_entries")
-      .select("id, staff_user_id, check_in_at, check_out_at")
+      .select("id, staff_user_id, check_in_at, check_out_at, created_at")
       .eq("staff_user_id", user.id)
       .is("check_out_at", null)
       .order("check_in_at", { ascending: false })
@@ -46,7 +47,7 @@ export default function Page() {
     // Load tất cả entries (để tính tuần)
     const { data: allData, error } = await supabase
       .from("time_entries")
-      .select("id, staff_user_id, check_in_at, check_out_at")
+      .select("id, staff_user_id, check_in_at, check_out_at, created_at")
       .eq("staff_user_id", user.id)
       .order("check_in_at", { ascending: false })
       .limit(200);
