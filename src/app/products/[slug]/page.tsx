@@ -1,6 +1,7 @@
 import { ProductDetailLoader } from "@/components/products/ProductDetailLoader";
 
-export default function Page({ params }: { params: { slug: string } }) {
-  return <ProductDetailLoader slug={params.slug} />;
+export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  return <ProductDetailLoader slug={slug} />;
 }
 
