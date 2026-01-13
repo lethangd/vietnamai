@@ -13,13 +13,34 @@ type StaffRow = {
   display_name: string | null;
 };
 
+function getAdminToken(): string | null {
+  if (typeof window === "undefined") return null;
+  const storedToken = localStorage.getItem("vietnamai_admin_token");
+  const expiresAt = localStorage.getItem("vietnamai_admin_expires");
+  if (!storedToken || !expiresAt) return null;
+  if (parseInt(expiresAt, 10) <= Date.now()) return null;
+  return storedToken;
+}
+
 async function adminFetchJson<T>(input: RequestInfo, init?: RequestInit) {
-  const res = await fetch(input, {
-    ...init,
-    credentials: "include", // BẮT BUỘC để gửi cookie trong production
-  });
+  const token = getAdminToken();
+  const headers: HeadersInit = {
+    ...(init?.headers as Record<string, string> | undefined),
+  };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  
+  const res = await fetch(input, { ...init, headers });
   const data = (await res.json().catch(() => null)) as any;
-  if (!res.ok) throw new Error(data?.error ?? "Admin API error");
+  if (!res.ok) {
+    if (res.status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("vietnamai_admin_token");
+      localStorage.removeItem("vietnamai_admin_expires");
+      window.location.href = "/admin/login";
+    }
+    throw new Error(data?.error ?? "Admin API error");
+  }
   return data as { data?: T; ok?: boolean };
 }
 

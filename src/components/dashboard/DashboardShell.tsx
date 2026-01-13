@@ -1,16 +1,21 @@
+"use client";
+
 import { cn } from "@/lib/cn";
 import Link from "next/link";
+import { LogOut } from "lucide-react";
 
 export type NavItem = { href: string; label: string };
 
 export function DashboardShell({
   title,
   nav,
-  children
+  children,
+  onLogout,
 }: {
   title: string;
   nav: NavItem[];
   children: React.ReactNode;
+  onLogout?: () => void;
 }) {
   return (
     <main className="mx-auto w-full max-w-7xl px-4 py-8 md:px-6 md:py-10">
@@ -30,6 +35,20 @@ export function DashboardShell({
                 {it.label}
               </Link>
             ))}
+            
+            {/* Logout button */}
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className={cn(
+                  "flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-lacquer-300",
+                  "hover:bg-lacquer-500/20 hover:text-lacquer-200"
+                )}
+              >
+                <LogOut className="h-4 w-4" />
+                Đăng xuất
+              </button>
+            )}
           </nav>
         </aside>
 

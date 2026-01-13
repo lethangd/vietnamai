@@ -1,18 +1,40 @@
 import type { Category, Order, Product, Profile, Settings, TimeEntry } from "@/types/domain";
+import { getAdminToken } from "@/lib/admin/AdminAuthProvider";
 
 /**
- * Fetch JSON từ Admin API
- * QUAN TRỌNG: credentials: "include" để gửi cookie trong production
+ * Fetch JSON từ Admin API với JWT Authorization header
  */
 async function adminFetchJson<T>(input: RequestInfo, init?: RequestInit) {
+  const token = getAdminToken();
+  
+  const headers: HeadersInit = {
+    ...(init?.headers as Record<string, string> | undefined),
+  };
+  
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  
   const res = await fetch(input, {
     ...init,
-    credentials: "include", // BẮT BUỘC để gửi cookie trong production
+    headers,
   });
+  
   const data = (await res.json().catch(() => null)) as any;
+  
   if (!res.ok) {
+    // Nếu unauthorized, có thể token hết hạn
+    if (res.status === 401) {
+      // Clear token và redirect đến login
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("vietnamai_admin_token");
+        localStorage.removeItem("vietnamai_admin_expires");
+        window.location.href = "/admin/login";
+      }
+    }
     throw new Error(data?.error ?? "Admin API error");
   }
+  
   return data as { data?: T; ok?: boolean };
 }
 

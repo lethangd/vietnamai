@@ -1,17 +1,23 @@
 import { getAdminEnv } from "@/lib/admin/env";
-import { ADMIN_COOKIE_NAME } from "@/lib/admin/guard";
-import { verifyAdminSession } from "@/lib/admin/session";
-import { cookies } from "next/headers";
+import { verifyAdminSession, type AdminPayload } from "@/lib/admin/session";
+import { headers } from "next/headers";
 
 /**
  * Require admin authentication
- * Đọc cookie từ cookies() API (Next.js App Router)
+ * Đọc JWT token từ Authorization header: "Bearer <token>"
  */
-export async function requireAdmin() {
+export async function requireAdmin(): Promise<AdminPayload | null> {
   const { secret } = getAdminEnv();
-  const cookieStore = await cookies();
-  const token = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
+  const headersList = await headers();
+  const authHeader = headersList.get("authorization");
+  
+  if (!authHeader?.startsWith("Bearer ")) {
+    return null;
+  }
+  
+  const token = authHeader.slice(7); // Remove "Bearer " prefix
   if (!token) return null;
+  
   return verifyAdminSession(token, secret);
 }
 

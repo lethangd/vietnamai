@@ -1,8 +1,9 @@
 import crypto from "node:crypto";
 
-type Payload = {
+export type AdminPayload = {
   email: string;
   iat: number; // issued at (unix seconds)
+  exp?: number; // expiration (unix seconds)
 };
 
 function b64url(input: Buffer | string) {
@@ -20,13 +21,13 @@ function b64urlDecodeToBuffer(input: string) {
   return Buffer.from(b64, "base64");
 }
 
-export function signAdminSession(payload: Payload, secret: string) {
+export function signAdminSession(payload: AdminPayload, secret: string) {
   const body = b64url(JSON.stringify(payload));
   const sig = crypto.createHmac("sha256", secret).update(body).digest();
   return `${body}.${b64url(sig)}`;
 }
 
-export function verifyAdminSession(token: string, secret: string): Payload | null {
+export function verifyAdminSession(token: string, secret: string): AdminPayload | null {
   const parts = token.split(".");
   if (parts.length !== 2) return null;
   const [body, sig] = parts;
@@ -38,8 +39,14 @@ export function verifyAdminSession(token: string, secret: string): Payload | nul
   if (!crypto.timingSafeEqual(actual, expected)) return null;
 
   try {
-    const parsed = JSON.parse(Buffer.from(b64urlDecodeToBuffer(body)).toString("utf8")) as Payload;
+    const parsed = JSON.parse(Buffer.from(b64urlDecodeToBuffer(body)).toString("utf8")) as AdminPayload;
     if (!parsed?.email || !parsed?.iat) return null;
+    
+    // Kiểm tra token đã hết hạn chưa
+    if (parsed.exp && parsed.exp < Math.floor(Date.now() / 1000)) {
+      return null; // Token đã hết hạn
+    }
+    
     return parsed;
   } catch {
     return null;

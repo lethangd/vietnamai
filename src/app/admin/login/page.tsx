@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Spinner } from "@/components/ui/Spinner";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Page() {
   const router = useRouter();
@@ -14,22 +14,50 @@ export default function Page() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
+  // Redirect nếu đã đăng nhập
+  useEffect(() => {
+    const token = localStorage.getItem("vietnamai_admin_token");
+    const expires = localStorage.getItem("vietnamai_admin_expires");
+    if (token && expires && parseInt(expires, 10) > Date.now()) {
+      router.replace("/admin");
+    }
+  }, [router]);
+
   async function submit() {
     setBusy(true);
     setErr(null);
-    const res = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ email, password }),
-      credentials: "include", // Đảm bảo cookie được set đúng trong production
-    });
-    setBusy(false);
-    if (!res.ok) {
-      const data = (await res.json().catch(() => null)) as any;
-      setErr(data?.error ?? "Đăng nhập thất bại");
-      return;
+    
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      
+      const data = await res.json().catch(() => null) as {
+        ok?: boolean;
+        error?: string;
+        token?: string;
+        expiresAt?: number;
+      } | null;
+      
+      if (!res.ok || !data?.ok) {
+        setErr(data?.error ?? "Đăng nhập thất bại");
+        return;
+      }
+      
+      // Lưu JWT token vào localStorage
+      if (data.token && data.expiresAt) {
+        localStorage.setItem("vietnamai_admin_token", data.token);
+        localStorage.setItem("vietnamai_admin_expires", data.expiresAt.toString());
+      }
+      
+      router.replace("/admin");
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Lỗi kết nối");
+    } finally {
+      setBusy(false);
     }
-    router.replace("/admin");
   }
 
   return (
