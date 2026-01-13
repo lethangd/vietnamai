@@ -14,7 +14,10 @@ type StaffRow = {
 };
 
 async function adminFetchJson<T>(input: RequestInfo, init?: RequestInit) {
-  const res = await fetch(input, init);
+  const res = await fetch(input, {
+    ...init,
+    credentials: "include", // BẮT BUỘC để gửi cookie trong production
+  });
   const data = (await res.json().catch(() => null)) as any;
   if (!res.ok) throw new Error(data?.error ?? "Admin API error");
   return data as { data?: T; ok?: boolean };

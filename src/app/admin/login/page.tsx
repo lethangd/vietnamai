@@ -20,7 +20,8 @@ export default function Page() {
     const res = await fetch("/api/admin/login", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({ email, password }),
+      credentials: "include", // Đảm bảo cookie được set đúng trong production
     });
     setBusy(false);
     if (!res.ok) {
