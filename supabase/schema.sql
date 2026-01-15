@@ -27,6 +27,7 @@ create table if not exists public.products (
   description_html text not null default '',
   image_url text null,
   image_path text null,
+  features jsonb null default '[]'::jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

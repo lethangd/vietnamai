@@ -119,45 +119,25 @@ export function ProductDetailClient({ product, settings, categoryName }: Props) 
             </Card>
 
             {/* Features */}
-            <Card className="mb-8 border-zinc-800 bg-gradient-to-br from-zinc-900/80 to-black p-6">
-              <h3 className="mb-4 text-lg font-semibold text-white">
-                ✨ Tính năng nổi bật
-              </h3>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-gold-500/20">
-                    <Check className="h-3.5 w-3.5 text-gold-400" />
-                  </div>
-                  <span className="text-sm leading-relaxed text-zinc-300">
-                    Tự do lựa chọn tài khoản ChatGPT
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-gold-500/20">
-                    <Check className="h-3.5 w-3.5 text-gold-400" />
-                  </div>
-                  <span className="text-sm leading-relaxed text-zinc-300">
-                    Không giới hạn tạo ảnh trong ngày
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-gold-500/20">
-                    <Check className="h-3.5 w-3.5 text-gold-400" />
-                  </div>
-                  <span className="text-sm leading-relaxed text-zinc-300">
-                    Không giới hạn hỏi thoại trong ngày
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-gold-500/20">
-                    <Check className="h-3.5 w-3.5 text-gold-400" />
-                  </div>
-                  <span className="text-sm leading-relaxed text-zinc-300">
-                    Hỗ trợ 24/7 qua Zalo và Telegram
-                  </span>
-                </li>
-              </ul>
-            </Card>
+            {product.features && product.features.length > 0 && (
+              <Card className="mb-8 border-zinc-800 bg-gradient-to-br from-zinc-900/80 to-black p-6">
+                <h3 className="mb-4 text-lg font-semibold text-white">
+                  ✨ Tính năng nổi bật
+                </h3>
+                <ul className="space-y-3">
+                  {product.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-gold-500/20">
+                        <Check className="h-3.5 w-3.5 text-gold-400" />
+                      </div>
+                      <span className="text-sm leading-relaxed text-zinc-300">
+                        {feature}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            )}
 
             {/* Description */}
             {product.description_html && (

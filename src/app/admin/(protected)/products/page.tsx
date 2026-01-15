@@ -35,6 +35,8 @@ export default function Page() {
   const [descriptionHtml, setDescriptionHtml] = useState<string>("");
   const [imageUrl, setImageUrl] = useState<string>("");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [features, setFeatures] = useState<string[]>([]);
+  const [newFeature, setNewFeature] = useState<string>("");
 
   const canSave = useMemo(() => {
     return name.trim().length > 0 && slug.trim().length > 0 && price > 0;
@@ -75,6 +77,8 @@ export default function Page() {
     setDescriptionHtml("<p></p>");
     setImageUrl("");
     setImageFile(null);
+    setFeatures([]);
+    setNewFeature("");
   }
 
   function startEdit(p: Product) {
@@ -88,6 +92,8 @@ export default function Page() {
     setDescriptionHtml(p.description_html ?? "");
     setImageUrl(p.image_url ?? "");
     setImageFile(null);
+    setFeatures(p.features ?? []);
+    setNewFeature("");
   }
 
   async function onSave() {
@@ -118,7 +124,8 @@ export default function Page() {
         discount_percent: discount,
         description_html: descriptionHtml,
         image_url: finalImageUrl,
-        image_path: finalImagePath
+        image_path: finalImagePath,
+        features: features.length > 0 ? features : null
       });
 
       await load();
@@ -299,6 +306,55 @@ export default function Page() {
                 onChange={(e) => setDescriptionHtml(e.target.value)}
                 className="min-h-40 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300/60"
               />
+            </div>
+
+            <div>
+              <div className="mb-1 text-xs text-zinc-300">Tính năng nổi bật</div>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <Input
+                    value={newFeature}
+                    onChange={(e) => setNewFeature(e.target.value)}
+                    placeholder="Nhập tính năng..."
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && newFeature.trim()) {
+                        e.preventDefault();
+                        setFeatures([...features, newFeature.trim()]);
+                        setNewFeature("");
+                      }
+                    }}
+                  />
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      if (newFeature.trim()) {
+                        setFeatures([...features, newFeature.trim()]);
+                        setNewFeature("");
+                      }
+                    }}
+                  >
+                    Thêm
+                  </Button>
+                </div>
+                {features.length > 0 && (
+                  <div className="space-y-1 rounded-xl border border-white/10 bg-black/20 p-2">
+                    {features.map((f, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center justify-between rounded-lg bg-white/5 px-2 py-1 text-sm text-zinc-200"
+                      >
+                        <span>{f}</span>
+                        <button
+                          onClick={() => setFeatures(features.filter((_, i) => i !== idx))}
+                          className="text-xs text-lacquer-300 hover:text-lacquer-200"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {error ? (

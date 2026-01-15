@@ -353,33 +353,19 @@ export function ProductGridSection() {
                           </p>
                         </div>
 
-                        {/* Features - NHẤN MẠN H GIÁ TRỊ */}
-                        <ul className={`space-y-3 ${isFeatured ? "mt-6" : "mt-5"}`}>
-                          <li className="flex items-start gap-2 text-sm text-zinc-300">
-                            <div className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full ${isFeatured ? "bg-gold-500/30" : "bg-gold-500/20"}`}>
-                              <Check className={`h-3.5 w-3.5 ${isFeatured ? "text-gold-300" : "text-gold-400"}`} />
-                            </div>
-                            <span className={isFeatured ? "font-medium" : ""}>Tài khoản chính chủ</span>
-                          </li>
-                          <li className="flex items-start gap-2 text-sm text-zinc-300">
-                            <div className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full ${isFeatured ? "bg-gold-500/30" : "bg-gold-500/20"}`}>
-                              <Check className={`h-3.5 w-3.5 ${isFeatured ? "text-gold-300" : "text-gold-400"}`} />
-                            </div>
-                            <span className={isFeatured ? "font-medium" : ""}>Không giới hạn tạo ảnh</span>
-                          </li>
-                          <li className="flex items-start gap-2 text-sm text-zinc-300">
-                            <div className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full ${isFeatured ? "bg-gold-500/30" : "bg-gold-500/20"}`}>
-                              <Check className={`h-3.5 w-3.5 ${isFeatured ? "text-gold-300" : "text-gold-400"}`} />
-                            </div>
-                            <span className={isFeatured ? "font-medium" : ""}>Hỗ trợ 24/7 qua Zalo</span>
-                          </li>
-                          <li className="flex items-start gap-2 text-sm text-zinc-300">
-                            <div className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full ${isFeatured ? "bg-gold-500/30" : "bg-gold-500/20"}`}>
-                              <Check className={`h-3.5 w-3.5 ${isFeatured ? "text-gold-300" : "text-gold-400"}`} />
-                            </div>
-                            <span className={isFeatured ? "font-medium" : ""}>Thanh toán an toàn</span>
-                          </li>
-                        </ul>
+                        {/* Features - NHẤN MẠNH GIÁ TRỊ */}
+                        {p.features && p.features.length > 0 && (
+                          <ul className={`space-y-3 ${isFeatured ? "mt-6" : "mt-5"}`}>
+                            {p.features.map((feature, fIdx) => (
+                              <li key={fIdx} className="flex items-start gap-2 text-sm text-zinc-300">
+                                <div className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full ${isFeatured ? "bg-gold-500/30" : "bg-gold-500/20"}`}>
+                                  <Check className={`h-3.5 w-3.5 ${isFeatured ? "text-gold-300" : "text-gold-400"}`} />
+                                </div>
+                                <span className={isFeatured ? "font-medium" : ""}>{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
 
                         {/* VALUE PROP - SO SÁNH */}
                         {isFeatured && (

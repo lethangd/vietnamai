@@ -8,7 +8,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from("products")
     .select(
-      "id, name, slug, quantity, category_id, price_vnd, discount_percent, description_html, image_url, image_path, created_at, updated_at"
+      "id, name, slug, quantity, category_id, price_vnd, discount_percent, description_html, image_url, image_path, features, created_at, updated_at"
     )
     .order("created_at", { ascending: false })
     .limit(500);
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
     .from("products")
     .upsert(body, { onConflict: "id" })
     .select(
-      "id, name, slug, quantity, category_id, price_vnd, discount_percent, description_html, image_url, image_path, created_at, updated_at"
+      "id, name, slug, quantity, category_id, price_vnd, discount_percent, description_html, image_url, image_path, features, created_at, updated_at"
     )
     .maybeSingle();
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });

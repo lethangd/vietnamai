@@ -16,6 +16,7 @@ export type Product = {
   description_html: string;
   image_url: string | null;
   image_path: string | null;
+  features: string[] | null;
   created_at: string;
   updated_at: string;
 };

@@ -9,7 +9,7 @@ export async function fetchPublicCatalog() {
     supabase
       .from("products")
       .select(
-        "id, name, slug, quantity, category_id, price_vnd, discount_percent, description_html, image_url, created_at, updated_at"
+        "id, name, slug, quantity, category_id, price_vnd, discount_percent, description_html, image_url, features, created_at, updated_at"
       )
       .order("created_at", { ascending: false })
       .limit(200),
@@ -36,7 +36,7 @@ export async function fetchProductBySlug(slug: string) {
   const { data, error } = await supabase
     .from("products")
     .select(
-      "id, name, slug, quantity, category_id, price_vnd, discount_percent, description_html, image_url, created_at, updated_at"
+      "id, name, slug, quantity, category_id, price_vnd, discount_percent, description_html, image_url, features, created_at, updated_at"
     )
     .eq("slug", slug)
     .maybeSingle();
