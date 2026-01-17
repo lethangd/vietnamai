@@ -15,6 +15,21 @@ export default function Page() {
   const [telegram, setTelegram] = useState("");
   const [giftsHtml, setGiftsHtml] = useState("");
 
+  function formatGiftJson(input: string[] | null) {
+    if (Array.isArray(input)) return JSON.stringify(input, null, 2);
+    return "[]";
+  }
+
+  function parseGiftJson(raw: string) {
+    const trimmed = raw.trim();
+    if (!trimmed) return null;
+    const parsed = JSON.parse(trimmed);
+    if (!Array.isArray(parsed)) {
+      throw new Error("Quà tặng phải là JSON array, ví dụ: [\"<p>...</p>\"]");
+    }
+    return parsed.map((item) => String(item).trim()).filter(Boolean);
+  }
+
   useEffect(() => {
     async function run() {
       setLoading(true);
@@ -23,7 +38,7 @@ export default function Page() {
         const s = await adminGetSettings();
         setZalo(s?.zalo_url ?? "");
         setTelegram(s?.telegram_url ?? "");
-        setGiftsHtml(s?.gifts_html ?? "");
+        setGiftsHtml(formatGiftJson(s?.gifts_html ?? null));
       } catch (e) {
         setError(e instanceof Error ? e.message : "Không tải được dữ liệu");
       } finally {
@@ -37,11 +52,20 @@ export default function Page() {
     setSaving(true);
     setError(null);
     try {
+      let giftsPayload: string[] | null = null;
+      try {
+        giftsPayload = parseGiftJson(giftsHtml);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Quà tặng không hợp lệ");
+        setSaving(false);
+        return;
+      }
+
       await adminUpdateSettings({
         id: 1,
         zalo_url: zalo.trim() || null,
         telegram_url: telegram.trim() || null,
-        gifts_html: giftsHtml.trim() || null
+        gifts_html: giftsPayload
       });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Lưu thất bại");
@@ -85,16 +109,15 @@ export default function Page() {
             </div>
 
             <div>
-              <div className="mb-1 text-xs text-zinc-300">Quà tặng (HTML)</div>
+              <div className="mb-1 text-xs text-zinc-300">Quà tặng (JSON HTML)</div>
               <textarea
                 value={giftsHtml}
                 onChange={(e) => setGiftsHtml(e.target.value)}
-                placeholder={`Ví dụ:\n<p>🎁 Giảm 10% đơn đầu tiên</p>\n<!--gift-->\n<p>🎁 Tặng 3 ngày dùng thử miễn phí</p>\n<!--gift-->\n<p>🎁 Hỗ trợ ưu tiên 24/7</p>`}
+                placeholder={`Ví dụ:\n[\n  "<p>🎁 Giảm 10% đơn đầu tiên</p>",\n  "<p>🎁 Tặng 3 ngày dùng thử miễn phí</p>",\n  "<p>🎁 Hỗ trợ ưu tiên 24/7</p>"\n]`}
                 className="min-h-40 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300/60"
               />
               <div className="mt-2 text-xs text-zinc-500">
-                Mỗi quà tách bằng <span className="text-zinc-200">&lt;!--gift--&gt;</span> hoặc dòng{" "}
-                <span className="text-zinc-200">---</span>.
+                Nhập JSON array, mỗi phần tử là 1 HTML string.
               </div>
             </div>
 

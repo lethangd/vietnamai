@@ -10,12 +10,24 @@ import { useEffect, useMemo, useState } from "react";
 
 const STORAGE_KEY = "vietnamai_gift_claimed";
 
-function parseGiftHtml(source: string) {
-  if (!source?.trim()) return [];
-  return source
-    .split(/<!--\s*gift\s*-->|^\s*---\s*$/gim)
-    .map((item) => item.trim())
-    .filter(Boolean);
+function normalizeGiftList(input: unknown) {
+  if (!input) return [];
+  if (Array.isArray(input)) {
+    return input.map((item) => String(item).trim()).filter(Boolean);
+  }
+  if (typeof input === "string") {
+    const raw = input.trim();
+    if (!raw) return [];
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed.map((item) => String(item).trim()).filter(Boolean);
+      }
+    } catch {
+      return [raw];
+    }
+  }
+  return [];
 }
 
 export function GiftBoxPopup() {
@@ -48,7 +60,7 @@ export function GiftBoxPopup() {
     void run();
   }, []);
 
-  const gifts = useMemo(() => parseGiftHtml(settings?.gifts_html ?? ""), [settings?.gifts_html]);
+  const gifts = useMemo(() => normalizeGiftList(settings?.gifts_html), [settings?.gifts_html]);
   const canShowGift = !loading && !claimed && gifts.length > 0;
 
   function openGift() {
