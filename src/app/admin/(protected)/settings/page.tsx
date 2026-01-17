@@ -13,6 +13,7 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null);
   const [zalo, setZalo] = useState("");
   const [telegram, setTelegram] = useState("");
+  const [giftsHtml, setGiftsHtml] = useState("");
 
   useEffect(() => {
     async function run() {
@@ -22,6 +23,7 @@ export default function Page() {
         const s = await adminGetSettings();
         setZalo(s?.zalo_url ?? "");
         setTelegram(s?.telegram_url ?? "");
+        setGiftsHtml(s?.gifts_html ?? "");
       } catch (e) {
         setError(e instanceof Error ? e.message : "Không tải được dữ liệu");
       } finally {
@@ -38,7 +40,8 @@ export default function Page() {
       await adminUpdateSettings({
         id: 1,
         zalo_url: zalo.trim() || null,
-        telegram_url: telegram.trim() || null
+        telegram_url: telegram.trim() || null,
+        gifts_html: giftsHtml.trim() || null
       });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Lưu thất bại");
@@ -79,6 +82,20 @@ export default function Page() {
                 onChange={(e) => setTelegram(e.target.value)}
                 placeholder="https://t.me/..."
               />
+            </div>
+
+            <div>
+              <div className="mb-1 text-xs text-zinc-300">Quà tặng (HTML)</div>
+              <textarea
+                value={giftsHtml}
+                onChange={(e) => setGiftsHtml(e.target.value)}
+                placeholder={`Ví dụ:\n<p>🎁 Giảm 10% đơn đầu tiên</p>\n<!--gift-->\n<p>🎁 Tặng 3 ngày dùng thử miễn phí</p>\n<!--gift-->\n<p>🎁 Hỗ trợ ưu tiên 24/7</p>`}
+                className="min-h-40 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300/60"
+              />
+              <div className="mt-2 text-xs text-zinc-500">
+                Mỗi quà tách bằng <span className="text-zinc-200">&lt;!--gift--&gt;</span> hoặc dòng{" "}
+                <span className="text-zinc-200">---</span>.
+              </div>
             </div>
 
             {error ? (

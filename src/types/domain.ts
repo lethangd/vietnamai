@@ -25,6 +25,7 @@ export type Settings = {
   id: number;
   zalo_url: string | null;
   telegram_url: string | null;
+  gifts_html: string | null;
   updated_at: string;
 };
 

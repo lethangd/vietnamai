@@ -5,6 +5,7 @@ import { TrustSection } from "@/components/home/TrustSection";
 import { CTASection } from "@/components/home/CTASection";
 import { ScrollToProductButton } from "@/components/ui/ScrollToProductButton";
 import { HomeBackground } from "@/components/home/HomeBackground";
+import { GiftBoxPopup } from "@/components/home/GiftBoxPopup";
 
 /**
  * Home Page - Bán AI giá tốt nhất thị trường
@@ -33,6 +34,7 @@ export default function Page() {
 
       {/* Scroll button CHỈ HIỆN Ở TRANG HOME */}
       <ScrollToProductButton />
+      <GiftBoxPopup />
     </>
   );
 }

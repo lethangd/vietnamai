@@ -15,7 +15,7 @@ export async function fetchPublicCatalog() {
       .limit(200),
     supabase
       .from("settings")
-      .select("id, zalo_url, telegram_url, updated_at")
+      .select("id, zalo_url, telegram_url, gifts_html, updated_at")
       .eq("id", 1)
       .maybeSingle()
   ]);
@@ -59,7 +59,7 @@ export async function fetchSettings() {
   const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase
     .from("settings")
-    .select("id, zalo_url, telegram_url, updated_at")
+    .select("id, zalo_url, telegram_url, gifts_html, updated_at")
     .eq("id", 1)
     .maybeSingle();
   if (error) throw error;
