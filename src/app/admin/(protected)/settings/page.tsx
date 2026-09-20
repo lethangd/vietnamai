@@ -5,6 +5,12 @@ import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Spinner } from "@/components/ui/Spinner";
 import { adminGetSettings, adminUpdateSettings } from "@/lib/supabase/adminQueries";
+import {
+  normalizeFacebookUrl,
+  normalizeTelegramUrl,
+  normalizeTiktokUrl,
+  normalizeZaloUrl
+} from "@/lib/socialLinks";
 import { useEffect, useState } from "react";
 
 export default function Page() {
@@ -13,6 +19,8 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null);
   const [zalo, setZalo] = useState("");
   const [telegram, setTelegram] = useState("");
+  const [facebook, setFacebook] = useState("");
+  const [tiktok, setTiktok] = useState("");
   const [giftsHtml, setGiftsHtml] = useState("");
 
   function formatGiftJson(input: string[] | null) {
@@ -38,6 +46,8 @@ export default function Page() {
         const s = await adminGetSettings();
         setZalo(s?.zalo_url ?? "");
         setTelegram(s?.telegram_url ?? "");
+        setFacebook(s?.facebook_url ?? "");
+        setTiktok(s?.tiktok_url ?? "");
         setGiftsHtml(formatGiftJson(s?.gifts_html ?? null));
       } catch (e) {
         setError(e instanceof Error ? e.message : "Không tải được dữ liệu");
@@ -63,8 +73,10 @@ export default function Page() {
 
       await adminUpdateSettings({
         id: 1,
-        zalo_url: zalo.trim() || null,
-        telegram_url: telegram.trim() || null,
+        zalo_url: normalizeZaloUrl(zalo),
+        telegram_url: normalizeTelegramUrl(telegram),
+        facebook_url: normalizeFacebookUrl(facebook),
+        tiktok_url: normalizeTiktokUrl(tiktok),
         gifts_html: giftsPayload
       });
     } catch (e) {
@@ -80,7 +92,9 @@ export default function Page() {
         <div className="text-lg font-semibold text-zinc-50">Cài đặt</div>
         <div className="mt-2 text-sm text-zinc-300">
           Cập nhật link <span className="text-gold-200">Zalo</span> /{" "}
-          <span className="text-gold-200">Telegram</span> hiển thị ở trang chi tiết sản phẩm.
+          <span className="text-gold-200">Telegram</span> hiển thị ở trang chi tiết sản phẩm, và{" "}
+          <span className="text-gold-200">Facebook</span> /{" "}
+          <span className="text-gold-200">TikTok</span> hiển thị ở footer.
         </div>
       </Card>
 
@@ -104,7 +118,23 @@ export default function Page() {
               <Input
                 value={telegram}
                 onChange={(e) => setTelegram(e.target.value)}
-                placeholder="https://t.me/..."
+                placeholder="https://t.me/VietnamAI_store hoặc @VietnamAI_store"
+              />
+            </div>
+            <div>
+              <div className="mb-1 text-xs text-zinc-300">Facebook URL</div>
+              <Input
+                value={facebook}
+                onChange={(e) => setFacebook(e.target.value)}
+                placeholder="https://facebook.com/... hoặc tên trang"
+              />
+            </div>
+            <div>
+              <div className="mb-1 text-xs text-zinc-300">TikTok URL</div>
+              <Input
+                value={tiktok}
+                onChange={(e) => setTiktok(e.target.value)}
+                placeholder="https://tiktok.com/@... hoặc @username"
               />
             </div>
 

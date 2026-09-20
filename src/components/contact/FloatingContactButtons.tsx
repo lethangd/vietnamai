@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/cn";
+import { normalizeTelegramUrl, normalizeZaloUrl } from "@/lib/socialLinks";
 import { MessageCircle, Send } from "lucide-react";
 
 type Props = {
@@ -19,19 +20,22 @@ export function FloatingContactButtons({ zaloUrl, telegramUrl, className }: Prop
     tone: string;
   }> = [];
 
-  if (zaloUrl) {
+  const normalizedZalo = normalizeZaloUrl(zaloUrl);
+  const normalizedTelegram = normalizeTelegramUrl(telegramUrl);
+
+  if (normalizedZalo) {
     items.push({
       key: "zalo",
-      href: zaloUrl,
+      href: normalizedZalo,
       label: "Zalo",
       icon: <MessageCircle className="h-4 w-4" />,
       tone: "bg-[#0068FF]/85 hover:bg-[#0068FF]"
     });
   }
-  if (telegramUrl) {
+  if (normalizedTelegram) {
     items.push({
       key: "telegram",
-      href: telegramUrl,
+      href: normalizedTelegram,
       label: "Telegram",
       icon: <Send className="h-4 w-4" />,
       tone: "bg-[#229ED9]/85 hover:bg-[#229ED9]"

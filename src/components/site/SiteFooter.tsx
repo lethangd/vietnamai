@@ -2,15 +2,45 @@
 
 import Link from "next/link";
 import { FlagStarMark } from "@/components/vietnam/FlagStarMark";
-import { Facebook, Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Mail, Phone } from "lucide-react";
+import { normalizeFacebookUrl, normalizeTiktokUrl } from "@/lib/socialLinks";
+import { fetchSettings } from "@/lib/supabase/publicQueries";
+import { useEffect, useState } from "react";
+import type { Settings } from "@/types/domain";
 
 /**
  * Site Footer - Vietnamese Branding
  */
 import { DrumDivider } from "@/components/vietnam/DrumDivider";
 
+function TiktokIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M16.6 5.82c-.9-.98-1.4-2.25-1.4-3.57h-3.05v13.9c0 1.56-1.27 2.83-2.83 2.83a2.83 2.83 0 0 1-2.83-2.83 2.83 2.83 0 0 1 2.83-2.83c.29 0 .57.04.83.13V10.4a5.9 5.9 0 0 0-.83-.06A5.88 5.88 0 0 0 3.5 16.22a5.88 5.88 0 0 0 5.88 5.88 5.88 5.88 0 0 0 5.88-5.88V9.01a8.2 8.2 0 0 0 4.79 1.53V7.5a4.83 4.83 0 0 1-3.45-1.68z" />
+    </svg>
+  );
+}
+
 export function SiteFooter() {
   const currentYear = new Date().getFullYear();
+  const [settings, setSettings] = useState<Settings | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchSettings()
+      .then((s) => {
+        if (!cancelled) setSettings(s);
+      })
+      .catch(() => {
+        // Không chặn hiển thị footer nếu tải settings thất bại
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const facebookUrl = normalizeFacebookUrl(settings?.facebook_url) ?? "https://facebook.com/VietnamAI_store";
+  const tiktokUrl = normalizeTiktokUrl(settings?.tiktok_url) ?? "https://tiktok.com/@VietnamAI_store";
 
   const links = {
     product: [
@@ -59,9 +89,16 @@ export function SiteFooter() {
               </div>
             </Link>
 
-            <p className="mt-4 text-sm leading-relaxed text-zinc-400">
-              Giải pháp AI Chatbot hàng đầu cho doanh nghiệp Việt Nam. 
-              Tự động hóa chăm sóc khách hàng, tăng doanh thu.
+            <p className="mt-4 text-sm font-semibold leading-relaxed text-zinc-300">
+              MANG AI LẠI GẦN HƠN VỚI NGƯỜI VIỆT
+            </p>
+            <p className="mt-1 text-sm leading-relaxed text-zinc-400">
+              UY TÍN - TRÁCH NHIỆM - BẢO MẬT
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-zinc-400">
+              Cảm ơn quý khách đã lựa chọn chúng tôi!
+              <br />
+              www.vietnamai.store
             </p>
 
             {/* Contact info */}
@@ -145,14 +182,23 @@ export function SiteFooter() {
               <h3 className="text-sm font-semibold text-white">Kết nối</h3>
               <div className="mt-3 flex gap-3">
                 <a
-                  href="https://facebook.com/vietnamai"
+                  href={facebookUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="Facebook"
                   className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/50 text-zinc-400 transition-all hover:border-gold-500/50 hover:bg-gold-500/10 hover:text-gold-400"
                 >
                   <Facebook className="h-4 w-4" />
                 </a>
-                {/* Thêm social icons khác nếu cần */}
+                <a
+                  href={tiktokUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="TikTok"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/50 text-zinc-400 transition-all hover:border-gold-500/50 hover:bg-gold-500/10 hover:text-gold-400"
+                >
+                  <TiktokIcon className="h-4 w-4" />
+                </a>
               </div>
             </div>
           </div>

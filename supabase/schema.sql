@@ -36,6 +36,8 @@ create table if not exists public.settings (
   id int primary key check (id = 1),
   zalo_url text null,
   telegram_url text null,
+  facebook_url text null,
+  tiktok_url text null,
   gifts_html jsonb null default '[]'::jsonb,
   updated_at timestamptz not null default now()
 );

@@ -333,7 +333,7 @@ export function ProductGridSection() {
 
                         {/* PRICE - CỰC NỔI BẬT */}
                         <div className={`border-b border-zinc-800 pb-6 ${isFeatured ? "mt-8" : "mt-6"}`}>
-                          {hasDiscount && (
+                          {p.price_vnd > 0 && hasDiscount && (
                             <div className="mb-2 flex items-center gap-2">
                               <span className="text-base text-zinc-500 line-through">
                                 {formatVnd(p.price_vnd)}
@@ -345,11 +345,11 @@ export function ProductGridSection() {
                           )}
                           <div className="flex items-baseline gap-2">
                             <span className={`font-black ${isFeatured ? "text-5xl md:text-6xl text-gold-400" : "text-4xl text-white"}`}>
-                              {formatVnd(finalPrice)}
+                              {p.price_vnd > 0 ? formatVnd(finalPrice) : "Liên hệ"}
                             </span>
                           </div>
                           <p className="mt-2 text-sm text-zinc-500">
-                            {hasDiscount && "👉 "}Rẻ hơn mua trực tiếp
+                            {p.price_vnd > 0 ? (hasDiscount && "👉 ") + "Rẻ hơn mua trực tiếp" : "Liên hệ để được báo giá tốt nhất"}
                           </p>
                         </div>
 

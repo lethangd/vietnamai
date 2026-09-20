@@ -39,8 +39,8 @@ export default function Page() {
   const [newFeature, setNewFeature] = useState<string>("");
 
   const canSave = useMemo(() => {
-    return name.trim().length > 0 && slug.trim().length > 0 && price > 0;
-  }, [name, slug, price]);
+    return name.trim().length > 0 && slug.trim().length > 0;
+  }, [name, slug]);
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -274,7 +274,7 @@ export default function Page() {
             </div>
 
             <div>
-              <div className="mb-1 text-xs text-zinc-300">Giá (VND)</div>
+              <div className="mb-1 text-xs text-zinc-300">Giá (VND) — để trống/0 nếu chưa có giá</div>
               <Input
                 value={String(price)}
                 onChange={(e) => setPrice(Math.max(0, Number(e.target.value || 0)))}

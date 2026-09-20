@@ -7,7 +7,7 @@ export async function GET() {
   const supabase = getSupabaseServiceClient();
   const { data, error } = await supabase
     .from("settings")
-    .select("id, zalo_url, telegram_url, gifts_html, updated_at")
+    .select("id, zalo_url, telegram_url, facebook_url, tiktok_url, gifts_html, updated_at")
     .eq("id", 1)
     .maybeSingle();
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
@@ -48,6 +48,8 @@ export async function POST(req: Request) {
     .update({
       zalo_url: body?.zalo_url ?? null,
       telegram_url: body?.telegram_url ?? null,
+      facebook_url: body?.facebook_url ?? null,
+      tiktok_url: body?.tiktok_url ?? null,
       gifts_html: gifts
     })
     .eq("id", 1);

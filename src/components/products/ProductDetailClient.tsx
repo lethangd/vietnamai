@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { applyDiscount, formatVnd } from "@/lib/money";
+import { normalizeTelegramUrl, normalizeZaloUrl } from "@/lib/socialLinks";
 import type { Product, Settings } from "@/types/domain";
 import { motion } from "framer-motion";
 import { Check, Sparkles, MessageCircle, Send, ArrowLeft } from "lucide-react";
@@ -23,6 +24,8 @@ type Props = {
 export function ProductDetailClient({ product, settings, categoryName }: Props) {
   const finalPrice = applyDiscount(product.price_vnd, product.discount_percent);
   const hasDiscount = product.discount_percent > 0;
+  const zaloUrl = normalizeZaloUrl(settings?.zalo_url);
+  const telegramUrl = normalizeTelegramUrl(settings?.telegram_url);
 
   return (
     <main className="relative min-h-screen py-12 md:py-16">
@@ -89,7 +92,7 @@ export function ProductDetailClient({ product, settings, categoryName }: Props) 
             <Card className="mb-8 border-zinc-800 bg-gradient-to-br from-zinc-900/80 to-black p-6">
               <div className="flex flex-wrap items-end gap-4">
                 <div>
-                  {hasDiscount && (
+                  {product.price_vnd > 0 && hasDiscount && (
                     <div className="mb-2 flex items-center gap-2">
                       <span className="text-lg text-zinc-500 line-through">
                         {formatVnd(product.price_vnd)}
@@ -101,9 +104,9 @@ export function ProductDetailClient({ product, settings, categoryName }: Props) 
                   )}
                   <div className="flex items-baseline gap-2">
                     <span className="text-4xl font-bold text-gold-400 md:text-5xl">
-                      {formatVnd(finalPrice)}
+                      {product.price_vnd > 0 ? formatVnd(finalPrice) : "Liên hệ"}
                     </span>
-                    <span className="text-lg text-zinc-500">/ gói</span>
+                    {product.price_vnd > 0 && <span className="text-lg text-zinc-500">/ gói</span>}
                   </div>
                 </div>
 
@@ -195,9 +198,9 @@ export function ProductDetailClient({ product, settings, categoryName }: Props) 
                 {/* CTA Buttons - ĐỒNG BỘ & ĐẸP */}
                 <div className="space-y-3">
                   {/* Zalo button */}
-                  {settings?.zalo_url && (
+                  {zaloUrl && (
                     <a
-                      href={settings.zalo_url}
+                      href={zaloUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group block"
@@ -213,9 +216,9 @@ export function ProductDetailClient({ product, settings, categoryName }: Props) 
                   )}
 
                   {/* Telegram button */}
-                  {settings?.telegram_url && (
+                  {telegramUrl && (
                     <a
-                      href={settings.telegram_url}
+                      href={telegramUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group block"

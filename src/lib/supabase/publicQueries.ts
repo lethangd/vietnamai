@@ -15,7 +15,7 @@ export async function fetchPublicCatalog() {
       .limit(200),
     supabase
       .from("settings")
-      .select("id, zalo_url, telegram_url, gifts_html, updated_at")
+      .select("id, zalo_url, telegram_url, facebook_url, tiktok_url, gifts_html, updated_at")
       .eq("id", 1)
       .maybeSingle()
   ]);
